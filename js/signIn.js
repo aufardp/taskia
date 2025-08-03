@@ -10,10 +10,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const result = userManager.signInUser(usernameByInput);
 
     if (result.success) {
-      alert("success login" + result.username);
-      // return (window.location.href = "../tasks.html");
+      localStorage.setItem("usernameLoggedIn", usernameByInput);
+      return (window.location.href = "../tasks.html");
     } else {
-      console.log(result.message);
+      alert("Username tidak ditemukan");
     }
   });
 });
