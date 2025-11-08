@@ -25,15 +25,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const taskWrapper = document.getElementById("taskWrapper");
   const taskWrapperEmpty = document.getElementById("taskWrapperEmpty");
 
-  function displayAllTasks() {
+  function displayAllTasks(tasks = existingTask) {
     if (existingTask.length === 0) {
       taskWrapper.className = "hidden";
       console.log("tidak ada task tersedia");
     } else {
+      taskWrapper.innerHTML = "";
       taskWrapperEmpty.className = "hidden";
       console.log("beberapa task tersedia dan siap untuk ditampilkan");
 
-      existingTask.map((task) => {
+      tasks.map((task) => {
         const userFriendlyDate = formatDate(task.createdAt);
 
         const itemTask = document.createElement("div");
@@ -127,12 +128,30 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="flex flex-row items-center gap-x-3">
           <a href="#"
             class="my-auto font-semibold text-taskia-red border border-taskia-red p-[12px_20px] h-12 rounded-full">Delete</a>
-          <a href="#"
-            class="flex gap-[10px] justify-center items-center text-white p-[12px_20px] h-12 font-semibold bg-gradient-to-b from-[#977FFF] to-[#6F4FFF] rounded-full w-full border border-taskia-background-grey">Complete</a>
+          ${
+            task.isCompleted === false
+              ? `<a
+                href="#"
+                id="completeTask-${task.id}"
+                class="flex gap-[10px] justify-center items-center text-white p-[12px_20px] h-12 font-semibold bg-gradient-to-b from-[#977FFF] to-[#6F4FFF] rounded-full w-full border border-taskia-background-grey"
+              >
+                Complete
+              </a>`
+              : `<a href="#" id="completeTask-${task.id}" class="hidden"></a>`
+          }
         </div>
         `;
 
         taskWrapper.appendChild(itemTask);
+
+        itemTask
+          .querySelector(`#completeTask-${task.id}`)
+          .addEventListener("click", function (event) {
+            event.preventDefault();
+            myTasks.completeTask(task.id);
+            const updateTasks = myTasks.getTasks();
+            displayAllTasks(updateTasks);
+          });
       });
     }
   }
